@@ -56,7 +56,8 @@
     }
 </script>
 
-<p>The sumburst chart shows only the stores / shoes with less than 10 items in inventory. </p>
+
+<p>Displays the current state of all the known ALDO franchise stores </p>
 <div class="wrapper">
     <div class="info">
         <div class="buttons">
@@ -92,10 +93,11 @@
 
 
     .info  {
-        border: solid 1px red;
+        border: solid 1px #666;
         display: grid;
         grid-template-rows: 50px 1fr;
         grid-row-gap: 40px;
+        padding: 10px;
     }
 </style>
 
