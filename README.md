@@ -2,13 +2,7 @@
 
 ## Instructions
 
-1. Inside shoe-store-websocket, run the text inside startup.txt. This requires ruby. 
-
-```
-cd show-store-websocket
-./bin/websocketd --port=8044 ruby inventory.rb
-
-```
+1. Inside shoe-store-websocket, run the websocket on port 8044 (or change in aldo_store.js)
 
 
 2. Install node modules
