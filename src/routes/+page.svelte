@@ -2,7 +2,9 @@
   import { onMount, onDestroy } from "svelte"
   import Store from '$lib/components/Store.svelte'
   import type { PageData } from './$types'
-  import { aldoCache } from "../lib/svelte_data_stores/aldo_store"
+  import { aldoCache, aldoListener } from "../lib/svelte_data_stores/aldo_store"
+
+  import Charts from "$lib/components/Charts.svelte";
 
   export let data: PageData
 
@@ -22,12 +24,7 @@
   <h1>ALDO SUPPORT DESK</h1>
   <main>
     <div>
-      {#each data.feed as store (store.id)}
-        <Store {store} />
-      {/each}
-
-
-
+      <Charts />
     </div>
   </main>
 </div>

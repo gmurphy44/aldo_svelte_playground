@@ -3,12 +3,7 @@
     import Charts from "$lib/components/Charts.svelte";
     import { aldoListener } from "$lib/svelte_data_stores/aldo_store";
 
-    // import Post from "$lib/components/Post.svelte";
-    // import type { PageData } from "./$types";
-  
-    // export let data: PageData;
-
-    // $: console.log($aldoListener)
+    $: console.log($aldoListener)
 </script>
 
 <div>

@@ -5,11 +5,12 @@
     //https://observablehq.com/@d3/zoomable-sunburst
 
     import * as d3 from "d3"
+    import { find } from "lodash";
 
     import { createEventDispatcher } from "svelte"
 
     export let data;
-
+    export let selected = null;
 
     let htmlNode;
     let outerWidth
@@ -36,9 +37,13 @@
 
     
     function clicked(event, p) {
+        if(!p.children) { 
+            selected = p.parent.data;
+            return
+         }
+
         dispatch("pause")
-        
-        if(!p.children) { return }
+
         parentCircle.datum(p.parent || root);
         root.each(d => d.target = {
             x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
@@ -75,13 +80,10 @@
     }
 
     function arcVisible(d) {
-        if(!d.children?.length && d.data.shoes > 10) { return false}
-
         return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
     }
 
     function labelVisible(d) {
-        if(!d.children?.length && d.data.shoes > 10) { return false}
         return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
     }
 
@@ -89,6 +91,13 @@
         const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
         const y = (d.y0 + d.y1) / 2 * radius;
         return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+    }
+
+    function shoesCount(d) {
+        if(isNaN(d)){
+            return ""
+        }
+        return ` (${d})`
     }
 
 
@@ -105,6 +114,10 @@
         .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
 
 
+
+    $: if(selected && data) {
+       selected = data.children.find(c => c.name == selected.name)
+    }
 
 
     //run this if the data changes and we have a DOM node
@@ -160,7 +173,7 @@
             .append("title");
         
         pathSel.select("title")
-            .text(d => `${d.ancestors().map(d => `${d.data.name} (${d.data.shoes}) `).reverse().join("/")}\n${format(d.shoes)}`);
+            .text(d => `${d.ancestors().map(d => `${d.data.name} ${shoesCount(d.data)} `).reverse().join("/")}\n${format(d.shoes)}`);
         
 
         pathSel.transition()

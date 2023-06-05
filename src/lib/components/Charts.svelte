@@ -5,12 +5,13 @@
     import { aldoCache } from "$lib/svelte_data_stores/aldo_store";
 
     import Sunburst from "./Sunburst.svelte" 
+    import InventoryListItem from "./InventoryListItem.svelte";
 
 
     const type = "sun"
 
     let paused = false;
-
+    let selected = null;
     /******
      * {
      *  storeName: {shoeName: inventory, shoename, inventory}
@@ -31,9 +32,9 @@
                         //4 slice sizes 0, 2, 4, 6 inversely based on inventory amount 
                         // (so less inventory means a bigger slice so its more obvious)
                         // GM: This could be done nicer with a d3-scale, but this is quick and crude
-                        value: (inv >= 10 ? 0 : 
-                            (inv >= 5 ? 2 : 
-                                (inv > 1 ? 4 : 6)
+                        value: (inv >= 10 ? 1 : 
+                            (inv >= 5 ? 5 : 
+                                (inv > 2 ? 10 : 20)
                             )
                         )
                     }
@@ -43,8 +44,15 @@
         })
     }
 
+    $: selected_children = selected?.children.sort((a,b) => {
+        return a.shoes - b.shoes
+    })
+
     function handlePause() {
         paused = !paused;
+    }
+    function handleClear() {
+        selected = null
     }
 </script>
 
@@ -53,11 +61,24 @@
     <div class="info">
         <div class="buttons">
             <button on:click={handlePause}>{paused ? "Resume Updates" : "Pause Updated" }</button>
+            {#if selected}
+                <button on:click={handleClear}>Clear Selection</button>
+            {/if}
         </div>
+        {#if selected}
+            <div class="inventory">
+                <h5>{selected.name}</h5>
+                <ul>
+                    {#each selected.children as child}
+                        <InventoryListItem {child} />
+                    {/each}
+                </ul>
+            </div>
+        {/if}
     </div>
     <div class="chart">
         {#if type === "sun"}
-        <Sunburst data={sunburst_data} on:pause={handlePause} />
+        <Sunburst data={sunburst_data} bind:selected on:pause={handlePause} />
         {/if}
     </div>
 </div>
